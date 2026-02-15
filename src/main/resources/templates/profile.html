@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Student Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .profile-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .profile-header .status {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .profile-body {
+            padding: 40px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 150px;
+        }
+
+        .info-value {
+            color: #333;
+            flex: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .edit-mode .info-value input,
+        .edit-mode .info-value select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .edit-mode .info-value input:focus,
+        .edit-mode .info-value select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .edit-mode .info-value input:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1 onclick="window.location.href='/dashboard'">🎓 Student Management System</h1>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">My Profile</a>
+            <a href="/my-courses">My Courses</a>
+            <a href="/" onclick="sessionStorage.clear()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="loading" class="loading">
+            Loading your profile...
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            Failed to load profile. Please try again.
+        </div>
+
+        <div id="profileCard" class="profile-card" style="display: none;">
+            <div class="profile-header">
+                <div class="profile-avatar" id="avatar">👤</div>
+                <h2 id="profileName">Loading...</h2>
+                <p id="profileEmail">email@example.com</p>
+                <span class="status" id="profileStatus">Status</span>
+            </div>
+
+            <div class="profile-body">
+                <div id="successMessage" class="success-message hidden">
+                    Profile updated successfully!
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-section">
+                        <h3>📋 Personal Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Full Name:</span>
+                            <span class="info-value">
+                                <span id="name" class="display-mode">-</span>
+                                <input type="text" id="nameInput" class="edit-mode hidden" />
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">
+                                <span id="email" class="display-mode">-</span>
+                                <input type="email" id="emailInput" class="edit-mode hidden" disabled title="Email cannot be changed" />
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">
+                                <span id="phone" class="display-mode">-</span>
+                                <input type="tel" id="phoneInput" class="edit-mode hidden" />
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Date of Birth:</span>
+                            <span class="info-value">
+                                <span id="dob" class="display-mode">-</span>
+                                <input type="date" id="dobInput" class="edit-mode hidden" />
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Gender:</span>
+                            <span class="info-value">
+                                <span id="gender" class="display-mode">-</span>
+                                <select id="genderInput" class="edit-mode hidden">
+                                    <option value="">Select Gender</option>
+                                    <option value="MALE">Male</option>
+                                    <option value="FEMALE">Female</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">
+                                <span id="address" class="display-mode">-</span>
+                                <input type="text" id="addressInput" class="edit-mode hidden" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>🎓 Academic Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Roll Number:</span>
+                            <span class="info-value">
+                                <span id="rollNumber" class="display-mode">-</span>
+                                <input type="text" id="rollNumberInput" class="edit-mode hidden" disabled title="Roll number cannot be changed" />
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Department:</span>
+                            <span class="info-value">
+                                <span id="department" class="display-mode">-</span>
+                                <input type="text" id="departmentInput" class="edit-mode hidden" disabled title="Department cannot be changed" />
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Current Semester:</span>
+                            <span class="info-value">
+                                <span id="semester" class="display-mode">-</span>
+                                <input type="number" id="semesterInput" class="edit-mode hidden" min="1" max="12" />
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Account Status:</span>
+                            <span class="info-value" id="status">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>👨‍👩‍👧 Guardian Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">Guardian Name:</span>
+                        <span class="info-value">
+                            <span id="guardianName" class="display-mode">-</span>
+                            <input type="text" id="guardianNameInput" class="edit-mode hidden" />
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Guardian Contact:</span>
+                        <span class="info-value">
+                            <span id="guardianContact" class="display-mode">-</span>
+                            <input type="tel" id="guardianContactInput" class="edit-mode hidden" />
+                        </span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="#" id="editBtn" class="btn btn-primary display-mode" onclick="enableEditMode(); return false;">✏️ Edit Profile</a>
+                    <a href="#" id="saveBtn" class="btn btn-primary edit-mode hidden" onclick="saveProfile(); return false;">💾 Save Changes</a>
+                    <a href="#" id="cancelBtn" class="btn btn-secondary edit-mode hidden" onclick="cancelEdit(); return false;">❌ Cancel</a>
+                    <a href="/my-courses" class="btn btn-secondary display-mode">View My Courses</a>
+                    <a href="/dashboard" class="btn btn-secondary display-mode">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        let currentStudent = null;
+        let isEditMode = false;
+
+        window.addEventListener('DOMContentLoaded', async function() {
+            // Require authentication
+            if (!requireAuth()) {
+                return;
+            }
+            await loadProfile();
+        });
+
+        async function loadProfile() {
+            try {
+                const userEmail = getUserInfo().email;
+
+                console.log('Loading profile for:', userEmail);
+
+                if (!userEmail) {
+                    console.error('No email in sessionStorage');
+                    alert('Please login first');
+                    logout();
+                    return;
+                }
+
+                // Fetch all students and find the current user
+                console.log('Fetching students from /api/students...');
+                const response = await fetchWithAuth('/api/students');
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Error:', errorText);
+                    throw new Error('Failed to fetch profile: ' + response.status);
+                }
+
+                const students = await response.json();
+                console.log('Total students fetched:', students.length);
+
+                // Try exact match first
+                currentStudent = students.find(s => s.email === userEmail);
+
+                // If not found, try case-insensitive match
+                if (!currentStudent) {
+                    console.log('Exact match not found, trying case-insensitive...');
+                    currentStudent = students.find(s => s.email && s.email.toLowerCase() === userEmail.toLowerCase());
+                }
+
+                console.log('Current student found:', currentStudent);
+
+                if (!currentStudent) {
+                    console.error('Student not found with email:', userEmail);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').innerHTML =
+                        `<p>Student not found with email: ${userEmail}</p>
+                         <p>Please try logging in again.</p>
+                         <a href="/" style="color: white; text-decoration: underline;">Go to Login</a>`;
+                    document.getElementById('error').style.display = 'block';
+                    return;
+                }
+
+                displayProfile(currentStudent);
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').innerHTML =
+                    `<p>Failed to load profile: ${error.message}</p>
+                     <p>Please try again or contact support.</p>
+                     <button onclick="window.location.reload()" style="margin-top: 10px; padding: 10px 20px; background: white; color: #c33; border: none; border-radius: 5px; cursor: pointer;">Retry</button>`;
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+
+        function displayProfile(student) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('profileCard').style.display = 'block';
+
+            // Header
+            document.getElementById('profileName').textContent = student.name;
+            document.getElementById('profileEmail').textContent = student.email;
+            document.getElementById('profileStatus').textContent = student.status || 'ACTIVE';
+            document.getElementById('avatar').textContent = student.gender === 'MALE' ? '👨‍🎓' : student.gender === 'FEMALE' ? '👩‍🎓' : '🧑‍🎓';
+
+            // Personal Info - Display Mode
+            document.getElementById('name').textContent = student.name;
+            document.getElementById('email').textContent = student.email;
+            document.getElementById('phone').textContent = student.phone || 'N/A';
+            document.getElementById('dob').textContent = student.dateOfBirth || 'N/A';
+            document.getElementById('gender').textContent = student.gender || 'N/A';
+            document.getElementById('address').textContent = student.address || 'N/A';
+
+            // Personal Info - Input Fields
+            document.getElementById('nameInput').value = student.name || '';
+            document.getElementById('emailInput').value = student.email || '';
+            document.getElementById('phoneInput').value = student.phone || '';
+            document.getElementById('dobInput').value = student.dateOfBirth || '';
+            document.getElementById('genderInput').value = student.gender || '';
+            document.getElementById('addressInput').value = student.address || '';
+
+            // Academic Info
+            document.getElementById('rollNumber').textContent = student.rollNumber;
+            document.getElementById('rollNumberInput').value = student.rollNumber || '';
+            document.getElementById('department').textContent = student.department ? student.department.name : 'Not assigned';
+            document.getElementById('departmentInput').value = student.department ? student.department.name : 'Not assigned';
+            document.getElementById('semester').textContent = student.semester ? `Semester ${student.semester}` : 'N/A';
+            document.getElementById('semesterInput').value = student.semester || '';
+            document.getElementById('status').textContent = student.status || 'ACTIVE';
+
+            // Guardian Info
+            document.getElementById('guardianName').textContent = student.guardianName || 'N/A';
+            document.getElementById('guardianNameInput').value = student.guardianName || '';
+            document.getElementById('guardianContact').textContent = student.guardianContact || 'N/A';
+            document.getElementById('guardianContactInput').value = student.guardianContact || '';
+        }
+
+        function enableEditMode() {
+            isEditMode = true;
+
+            // Hide all display-mode elements
+            document.querySelectorAll('.display-mode').forEach(el => el.classList.add('hidden'));
+
+            // Show all edit-mode elements
+            document.querySelectorAll('.edit-mode').forEach(el => el.classList.remove('hidden'));
+
+            // Add edit-mode class to profile body
+            document.querySelector('.profile-body').classList.add('edit-mode');
+        }
+
+        function cancelEdit() {
+            isEditMode = false;
+
+            // Show all display-mode elements
+            document.querySelectorAll('.display-mode').forEach(el => el.classList.remove('hidden'));
+
+            // Hide all edit-mode elements
+            document.querySelectorAll('.edit-mode').forEach(el => el.classList.add('hidden'));
+
+            // Remove edit-mode class from profile body
+            document.querySelector('.profile-body').classList.remove('edit-mode');
+
+            // Reset form values to original
+            displayProfile(currentStudent);
+        }
+
+        async function saveProfile() {
+            try {
+                const updateData = {
+                    name: document.getElementById('nameInput').value,
+                    phone: document.getElementById('phoneInput').value,
+                    address: document.getElementById('addressInput').value,
+                    dateOfBirth: document.getElementById('dobInput').value,
+                    gender: document.getElementById('genderInput').value,
+                    semester: parseInt(document.getElementById('semesterInput').value) || null,
+                    guardianName: document.getElementById('guardianNameInput').value,
+                    guardianContact: document.getElementById('guardianContactInput').value
+                    // Note: Roll number and department are intentionally excluded
+                };
+
+                console.log('Updating profile with:', updateData);
+
+                const response = await fetch(`/api/students/${currentStudent.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error('Failed to update profile: ' + errorText);
+                }
+
+                const updatedStudent = await response.json();
+                console.log('Profile updated successfully:', updatedStudent);
+
+                // Update current student object
+                currentStudent = updatedStudent;
+
+                // Display updated profile
+                displayProfile(updatedStudent);
+
+                // Exit edit mode
+                cancelEdit();
+
+                // Show success message
+                const successMsg = document.getElementById('successMessage');
+                successMsg.classList.remove('hidden');
+                setTimeout(() => {
+                    successMsg.classList.add('hidden');
+                }, 3000);
+
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Failed to update profile: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

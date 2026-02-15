@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Student Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .navbar .user-info span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .navbar .logout-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .logout-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .welcome-section h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .tabs {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 18px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            padding: 30px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .badge-pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .badge-core {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-elective {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .course-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .course-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .course-card .course-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1 onclick="window.location.href='/teacher-dashboard'">👨‍🏫 Teacher Dashboard</h1>
+        <div class="user-info">
+            <span id="teacherName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Welcome, <span id="welcomeName">Teacher</span>!</h2>
+            <p>Manage your courses, students, and grades from this dashboard.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">📚</div>
+                <h3>My Courses</h3>
+                <div class="number" id="myCourseCount">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">👨‍🎓</div>
+                <h3>Total Students</h3>
+                <div class="number" id="totalStudentCount">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">📝</div>
+                <h3>Total Enrollments</h3>
+                <div class="number" id="totalEnrollmentCount">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">⏳</div>
+                <h3>Pending Approvals</h3>
+                <div class="number" id="pendingApprovalCount">0</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('my-courses')">📚 My Courses</button>
+                <button class="tab-btn" onclick="switchTab('assign-courses')">➕ Assign Courses</button>
+                <button class="tab-btn" onclick="switchTab('all-students')">👨‍🎓 All Students</button>
+                <button class="tab-btn" onclick="switchTab('course-enrollments')">📝 Course Enrollments</button>
+                <button class="tab-btn" onclick="switchTab('pending-approvals')">⏳ Pending Approvals</button>
+                <button class="tab-btn" onclick="window.location.href='/database-schema'" style="background: linear-gradient(135deg, #4caf50 0%, #45a049 100%); color: white;">🗄️ DB Schema</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- My Courses Tab -->
+                <div id="my-courses" class="tab-pane active">
+                    <h3 style="margin-bottom: 20px;">My Courses</h3>
+                    <div id="myCoursesLoading" class="loading">Loading courses...</div>
+                    <div id="myCoursesContent" style="display: none;"></div>
+                </div>
+
+                <!-- Assign Courses Tab -->
+                <div id="assign-courses" class="tab-pane">
+                    <h3 style="margin-bottom: 20px;">➕ Assign Yourself to Courses</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Select from available courses without assigned teachers</p>
+                    <div id="availableCoursesLoading" class="loading">Loading available courses...</div>
+                    <div id="availableCoursesContent" style="display: none;"></div>
+                </div>
+
+                <!-- All Students Tab -->
+                <div id="all-students" class="tab-pane">
+                    <h3 style="margin-bottom: 20px;">All Students</h3>
+                    <div id="studentsLoading" class="loading">Loading students...</div>
+                    <div id="studentsContent" style="display: none;"></div>
+                </div>
+
+                <!-- Course Enrollments Tab -->
+                <div id="course-enrollments" class="tab-pane">
+                    <h3 style="margin-bottom: 20px;">Course Enrollments</h3>
+                    <div id="enrollmentsLoading" class="loading">Loading enrollments...</div>
+                    <div id="enrollmentsContent" style="display: none;"></div>
+                </div>
+
+                <!-- Pending Approvals Tab -->
+                <div id="pending-approvals" class="tab-pane">
+                    <div style="text-align: center; padding: 40px;">
+                        <h3 style="margin-bottom: 20px;">⏳ Pending Student Approvals</h3>
+                        <p style="color: #666; margin-bottom: 30px;">Review and approve student registrations</p>
+                        <a href="/student-approvals" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 30px;">
+                            📋 Go to Approval Management
+                        </a>
+                        <div id="approvalsLoading" class="loading" style="margin-top: 30px;">Loading preview...</div>
+                        <div id="approvalsContent" style="display: none; margin-top: 30px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        let currentTeacher = null;
+
+        window.addEventListener('DOMContentLoaded', async function() {
+            // Require teacher authentication
+            if (!requireRole('TEACHER')) {
+                return;
+            }
+            await loadTeacherData();
+        });
+
+        async function loadTeacherData() {
+            try {
+                const userEmail = getUserInfo().email;
+                const userRole = getUserInfo().role;
+
+                if (!userEmail || userRole.toLowerCase() !== 'teacher') {
+                    alert('Please login as a teacher to access this page');
+                    logout();
+                    return;
+                }
+
+                // Fetch teacher data with authentication
+                const teachersResponse = await fetchWithAuth('/api/teachers');
+                if (!teachersResponse.ok) {
+                    throw new Error('Failed to fetch teachers');
+                }
+
+                const teachers = await teachersResponse.json();
+                currentTeacher = teachers.find(t => t.email && t.email.toLowerCase() === userEmail.toLowerCase());
+
+                if (!currentTeacher) {
+                    alert('Teacher account not found. Please contact administration.');
+                    logout();
+                    return;
+                }
+
+                // Display teacher name
+                document.getElementById('teacherName').textContent = currentTeacher.name;
+                document.getElementById('welcomeName').textContent = currentTeacher.name;
+
+                // Load dashboard data
+                await Promise.all([
+                    loadMyCourses(),
+                    loadAvailableCourses(),
+                    loadAllStudents(),
+                    loadEnrollments(),
+                    loadPendingApprovals(),
+                    updateStats()
+                ]);
+
+            } catch (error) {
+                console.error('Error loading teacher data:', error);
+                alert('Failed to load dashboard: ' + error.message);
+            }
+        }
+
+        async function loadMyCourses() {
+            try {
+                const response = await fetchWithAuth('/api/courses/all');
+                const allCourses = await response.json();
+
+                // Filter courses taught by current teacher
+                const myCourses = allCourses.filter(c => c.teacher && c.teacher.id === currentTeacher.id);
+
+                document.getElementById('myCoursesLoading').style.display = 'none';
+                document.getElementById('myCoursesContent').style.display = 'block';
+
+                if (myCourses.length === 0) {
+                    document.getElementById('myCoursesContent').innerHTML = '<div class="empty-state"><h3>No courses assigned</h3><p>You are not assigned to any courses yet.</p></div>';
+                    return;
+                }
+
+                let html = '';
+                for (const course of myCourses) {
+                    // Get enrollment count
+                    const enrollResponse = await fetch(`/api/enrollments/course/${course.id}`);
+                    const enrollments = enrollResponse.ok ? await enrollResponse.json() : [];
+
+                    html += `
+                        <div class="course-card">
+                            <h4>${course.name} (${course.courseCode})</h4>
+                            <div class="course-meta">
+                                <span class="badge badge-${course.courseType.toLowerCase()}">${course.courseType}</span>
+                                <span>Credits: ${course.credits}</span>
+                                <span>Semester: ${course.semester}</span>
+                                <span>Students: ${enrollments.length}</span>
+                            </div>
+                            <p>${course.description || 'No description available'}</p>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm" onclick="viewCourseDetails(${course.id})">View Details</button>
+                                <button class="btn btn-primary btn-sm" onclick="viewEnrolledStudents(${course.id})">View Students</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                document.getElementById('myCoursesContent').innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                document.getElementById('myCoursesLoading').innerHTML = '<p style="color: #c33;">Failed to load courses</p>';
+            }
+        }
+
+        async function loadAllStudents() {
+            try {
+                const response = await fetchWithAuth('/api/students');
+                const students = await response.json();
+
+                document.getElementById('studentsLoading').style.display = 'none';
+                document.getElementById('studentsContent').style.display = 'block';
+
+                if (students.length === 0) {
+                    document.getElementById('studentsContent').innerHTML = '<div class="empty-state"><h3>No students found</h3></div>';
+                    return;
+                }
+
+                let html = '<table><thead><tr><th>Roll Number</th><th>Name</th><th>Email</th><th>Department</th><th>Semester</th><th>Status</th></tr></thead><tbody>';
+
+                students.forEach(student => {
+                    html += `
+                        <tr>
+                            <td><strong>${student.rollNumber}</strong></td>
+                            <td>${student.name}</td>
+                            <td>${student.email}</td>
+                            <td>${student.department ? student.department.name : 'N/A'}</td>
+                            <td>${student.semester || 'N/A'}</td>
+                            <td><span class="badge badge-${student.status === 'ACTIVE' ? 'active' : 'pending'}">${student.status || 'ACTIVE'}</span></td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                document.getElementById('studentsContent').innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading students:', error);
+                document.getElementById('studentsLoading').innerHTML = '<p style="color: #c33;">Failed to load students</p>';
+            }
+        }
+
+        async function loadEnrollments() {
+            try {
+                const response = await fetchWithAuth('/api/enrollments');
+                const enrollments = await response.json();
+
+                document.getElementById('enrollmentsLoading').style.display = 'none';
+                document.getElementById('enrollmentsContent').style.display = 'block';
+
+                if (enrollments.length === 0) {
+                    document.getElementById('enrollmentsContent').innerHTML = '<div class="empty-state"><h3>No enrollments found</h3></div>';
+                    return;
+                }
+
+                let html = '<table><thead><tr><th>Student</th><th>Course</th><th>Roll Number</th><th>Academic Year</th><th>Semester</th><th>Status</th><th>Grade</th></tr></thead><tbody>';
+
+                enrollments.forEach(enrollment => {
+                    const student = enrollment.student || {};
+                    const course = enrollment.course || {};
+
+                    html += `
+                        <tr>
+                            <td>${student.name || 'N/A'}</td>
+                            <td>${course.name || 'N/A'} (${course.courseCode || 'N/A'})</td>
+                            <td>${student.rollNumber || 'N/A'}</td>
+                            <td>${enrollment.academicYear || 'N/A'}</td>
+                            <td>${enrollment.semester || 'N/A'}</td>
+                            <td><span class="badge badge-${enrollment.status === 'ENROLLED' ? 'active' : 'pending'}">${enrollment.status || 'ENROLLED'}</span></td>
+                            <td>${enrollment.grade || 'Pending'}</td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                document.getElementById('enrollmentsContent').innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading enrollments:', error);
+                document.getElementById('enrollmentsLoading').innerHTML = '<p style="color: #c33;">Failed to load enrollments</p>';
+            }
+        }
+
+        async function loadPendingApprovals() {
+            try {
+                const response = await fetchWithAuth('/api/auth/pending-students');
+
+                document.getElementById('approvalsLoading').style.display = 'none';
+                document.getElementById('approvalsContent').style.display = 'block';
+
+                if (!response.ok) {
+                    const students = await fetchWithAuth('/api/students').then(r => r.json());
+                    const pendingStudents = students.filter(s => s.status === 'PENDING');
+                    displayPendingStudentsSummary(pendingStudents);
+                    return;
+                }
+
+                const pendingStudents = await response.json();
+                displayPendingStudentsSummary(pendingStudents);
+
+            } catch (error) {
+                console.error('Error loading pending approvals:', error);
+                document.getElementById('approvalsLoading').innerHTML = '<p style="color: #c33;">Failed to load pending approvals</p>';
+            }
+        }
+
+        function displayPendingStudentsSummary(students) {
+            const content = document.getElementById('approvalsContent');
+
+            if (students.length === 0) {
+                content.innerHTML = '<p style="color: #666;">✓ All student registrations have been processed!</p>';
+                return;
+            }
+
+            content.innerHTML = `
+                <div style="background: #fff3e0; padding: 20px; border-radius: 12px; border: 2px solid #f57c00;">
+                    <h4 style="color: #f57c00; margin-bottom: 10px;">
+                        ${students.length} student(s) waiting for approval
+                    </h4>
+                    <p style="color: #666; margin-bottom: 15px;">
+                        ${students.slice(0, 3).map(s => s.name).join(', ')}
+                        ${students.length > 3 ? ` and ${students.length - 3} more...` : ''}
+                    </p>
+                </div>
+            `;
+        }
+
+        async function updateStats() {
+            try {
+                // Get all courses
+                const coursesResponse = await fetchWithAuth('/api/courses/all');
+                const allCourses = await coursesResponse.json();
+                const myCourses = allCourses.filter(c => c.teacher && c.teacher.id === currentTeacher.id);
+
+                // Get all students
+                const studentsResponse = await fetchWithAuth('/api/students');
+                const students = await studentsResponse.json();
+
+                // Get all enrollments
+                const enrollmentsResponse = await fetchWithAuth('/api/enrollments');
+                const enrollments = await enrollmentsResponse.json();
+
+                // Get pending students
+                const pendingStudents = students.filter(s => s.status === 'PENDING');
+
+                document.getElementById('myCourseCount').textContent = myCourses.length;
+                document.getElementById('totalStudentCount').textContent = students.length;
+                document.getElementById('totalEnrollmentCount').textContent = enrollments.length;
+                document.getElementById('pendingApprovalCount').textContent = pendingStudents.length;
+
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        async function approveStudent(studentId, studentName) {
+            if (!confirm(`Are you sure you want to approve ${studentName}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/auth/approve-student/${studentId}`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    alert(`${studentName} has been approved!`);
+                    await loadPendingApprovals();
+                    await updateStats();
+                } else {
+                    alert('Failed to approve student. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error approving student:', error);
+                alert('Error approving student: ' + error.message);
+            }
+        }
+
+        async function rejectStudent(studentId, studentName) {
+            if (!confirm(`Are you sure you want to reject ${studentName}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/auth/reject-student/${studentId}`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    alert(`${studentName} has been rejected.`);
+                    await loadPendingApprovals();
+                    await updateStats();
+                } else {
+                    alert('Failed to reject student. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error rejecting student:', error);
+                alert('Error rejecting student: ' + error.message);
+            }
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Mark button as active
+            event.target.classList.add('active');
+
+            // Reload available courses when switching to that tab
+            if (tabName === 'assign-courses') {
+                loadAvailableCourses();
+            }
+        }
+
+        async function loadAvailableCourses() {
+            try {
+                document.getElementById('availableCoursesLoading').style.display = 'block';
+                document.getElementById('availableCoursesContent').style.display = 'none';
+
+                const response = await fetchWithAuth('/api/courses/unassigned');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch available courses');
+                }
+
+                const courses = await response.json();
+
+                document.getElementById('availableCoursesLoading').style.display = 'none';
+                document.getElementById('availableCoursesContent').style.display = 'block';
+
+                if (courses.length === 0) {
+                    document.getElementById('availableCoursesContent').innerHTML =
+                        '<div class="empty-state"><h3>No Available Courses</h3><p>All courses currently have assigned teachers.</p></div>';
+                    return;
+                }
+
+                let html = '<div style="display: grid; gap: 15px;">';
+                for (const course of courses) {
+                    html += `
+                        <div class="course-card">
+                            <h4>${course.name} (${course.courseCode})</h4>
+                            <div class="course-meta">
+                                <span class="badge badge-${course.courseType.toLowerCase()}">${course.courseType}</span>
+                                <span>Credits: ${course.credits || 'N/A'}</span>
+                                <span>Semester: ${course.semester || 'N/A'}</span>
+                                <span>Department: ${course.department ? course.department.name : 'N/A'}</span>
+                            </div>
+                            <p>${course.description || 'No description available'}</p>
+                            <div class="action-buttons" style="margin-top: 15px;">
+                                <button class="btn btn-primary" onclick="assignCourseToMe(${course.id}, '${course.name}')">
+                                    ➕ Assign to Me
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+
+                document.getElementById('availableCoursesContent').innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading available courses:', error);
+                document.getElementById('availableCoursesLoading').style.display = 'none';
+                document.getElementById('availableCoursesContent').style.display = 'block';
+                document.getElementById('availableCoursesContent').innerHTML =
+                    `<div class="empty-state"><h3>Error</h3><p>Failed to load courses: ${error.message}</p></div>`;
+            }
+        }
+
+        async function assignCourseToMe(courseId, courseName) {
+            if (!confirm(`Are you sure you want to assign "${courseName}" to yourself?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/courses/${courseId}/assign-teacher/${currentTeacher.id}`, {
+                    method: 'PUT'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to assign course');
+                }
+
+                alert(`Course "${courseName}" has been assigned to you successfully!`);
+
+                // Reload both tabs
+                await loadMyCourses();
+                await loadAvailableCourses();
+                await updateStats();
+
+            } catch (error) {
+                console.error('Error assigning course:', error);
+                alert('Failed to assign course: ' + error.message);
+            }
+        }
+
+        function viewCourseDetails(courseId) {
+            window.location.href = `/grade-management?courseId=${courseId}`;
+        }
+
+        function viewEnrolledStudents(courseId) {
+            window.location.href = `/grade-management?courseId=${courseId}`;
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

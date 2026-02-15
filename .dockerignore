@@ -1,0 +1,60 @@
+# Docker ignore file - excludes unnecessary files from Docker build context
+
+# Target directory (compiled classes)
+target/
+!target/*.jar
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build files
+build/
+bin/
+
+# Maven wrapper (optional - can be removed if you want to include it)
+.mvn/wrapper/maven-wrapper.jar
+
+# Database files
+*.db
+*.sqlite
+
+# Environment files
+.env
+.env.local
+
+# Documentation
+README.md
+HELP.md
+HOW_TO_LOAD_COURSES.md
+README_NEW.md
+
+# SQL scripts (they are copied separately in docker-compose)
+# create_database.sql
+# verify_database.sql
+# clear_data.sql

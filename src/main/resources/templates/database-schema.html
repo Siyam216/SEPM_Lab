@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Relationships - ER Diagrams</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: white;
+            color: #667eea;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.8rem;
+            color: #667eea;
+        }
+
+        .navbar .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .intro-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .intro-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .intro-section p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .diagram-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .diagram-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .diagram-header.inheritance {
+            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+            color: white;
+        }
+
+        .diagram-header.one-to-one {
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+            color: white;
+        }
+
+        .diagram-header.one-to-many {
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+        }
+
+        .diagram-header.many-to-many {
+            background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+            color: white;
+        }
+
+        .diagram-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .diagram-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .diagram-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            padding: 40px 20px;
+            min-height: 350px;
+            position: relative;
+        }
+
+        .entity-box {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            min-width: 280px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .entity-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .entity-box.highlight-inheritance {
+            border-color: #9c27b0;
+        }
+
+        .entity-box.highlight-one-to-one {
+            border-color: #4caf50;
+        }
+
+        .entity-box.highlight-one-to-many {
+            border-color: #2196f3;
+        }
+
+        .entity-box.highlight-many-to-many {
+            border-color: #e91e63;
+        }
+
+        .entity-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 7px 7px 0 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .entity-header.inheritance {
+            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+        }
+
+        .entity-header.one-to-one {
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+        }
+
+        .entity-header.one-to-many {
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+        }
+
+        .entity-header.many-to-many {
+            background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+        }
+
+        .entity-body {
+            padding: 20px;
+        }
+
+        .attribute {
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .attribute:last-child {
+            border-bottom: none;
+        }
+
+        .attribute.primary-key {
+            background: #fff9c4;
+            font-weight: 600;
+            color: #f57f17;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .attribute.foreign-key {
+            color: #2196f3;
+            font-weight: 500;
+        }
+
+        .relationship-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+
+        .arrow-line {
+            width: 150px;
+            height: 4px;
+            position: relative;
+        }
+
+        .arrow-line.inheritance {
+            background: #9c27b0;
+        }
+
+        .arrow-line.one-to-one {
+            background: #4caf50;
+        }
+
+        .arrow-line.one-to-many {
+            background: #2196f3;
+        }
+
+        .arrow-line.many-to-many {
+            background: #e91e63;
+        }
+
+        .arrow-line::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+
+        .arrow-line.inheritance::after {
+            border-left-color: #9c27b0;
+        }
+
+        .arrow-line.one-to-one::after {
+            border-left-color: #4caf50;
+        }
+
+        .arrow-line.one-to-many::after {
+            border-left-color: #2196f3;
+        }
+
+        .arrow-line.many-to-many::after {
+            border-left-color: #e91e63;
+        }
+
+        .relationship-label {
+            background: white;
+            border: 3px solid;
+            border-radius: 20px;
+            padding: 10px 25px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .relationship-label.inheritance {
+            border-color: #9c27b0;
+            color: #9c27b0;
+            background: #f3e5f5;
+        }
+
+        .relationship-label.one-to-one {
+            border-color: #4caf50;
+            color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .relationship-label.one-to-many {
+            border-color: #2196f3;
+            color: #2196f3;
+            background: #e3f2fd;
+        }
+
+        .relationship-label.many-to-many {
+            border-color: #e91e63;
+            color: #e91e63;
+            background: #fce4ec;
+        }
+
+        .description-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 5px solid;
+        }
+
+        .description-box.inheritance {
+            border-color: #9c27b0;
+        }
+
+        .description-box.one-to-one {
+            border-color: #4caf50;
+        }
+
+        .description-box.one-to-many {
+            border-color: #2196f3;
+        }
+
+        .description-box.many-to-many {
+            border-color: #e91e63;
+        }
+
+        .description-box h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .description-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .description-box li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .description-box li::before {
+            content: "➤ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 1000px) {
+            .diagram-content {
+                flex-direction: column;
+            }
+
+            .arrow-line {
+                width: 4px;
+                height: 80px;
+            }
+
+            .arrow-line::after {
+                top: auto;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%) rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <h1>🗄️ Database Relationships - ER Diagrams</h1>
+            <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+        </nav>
+
+        <div class="intro-section">
+            <h2>📊 Student Management System - Database Relationships</h2>
+            <p>This page demonstrates all four major types of database relationships with clear, focused diagrams</p>
+        </div>
+
+        <!-- Diagram 1: One-to-One Relationship -->
+        <div class="diagram-section">
+            <div class="diagram-header one-to-one">
+                <h3>🔗 One-to-One Relationship (1:1)</h3>
+                <p>Each Student has exactly one StudentProfile</p>
+            </div>
+
+            <div class="diagram-content">
+                <div class="entity-box highlight-one-to-one">
+                    <div class="entity-header one-to-one">👨‍🎓 STUDENT</div>
+                    <div class="entity-body">
+                        <div class="attribute primary-key">🔑 id</div>
+                        <div class="attribute">rollNumber</div>
+                        <div class="attribute">name</div>
+                        <div class="attribute">email</div>
+                        <div class="attribute">semester</div>
+                        <div class="attribute">department</div>
+                    </div>
+                </div>
+
+                <div class="relationship-indicator">
+                    <div class="arrow-line one-to-one"></div>
+                    <div class="relationship-label one-to-one">1 : 1</div>
+                </div>
+
+                <div class="entity-box highlight-one-to-one">
+                    <div class="entity-header one-to-one">📄 STUDENT_PROFILE</div>
+                    <div class="entity-body">
+                        <div class="attribute primary-key">🔑 id</div>
+                        <div class="attribute foreign-key">🔗 student_id (UNIQUE)</div>
+                        <div class="attribute">profilePictureUrl</div>
+                        <div class="attribute">bio</div>
+                        <div class="attribute">linkedinUrl</div>
+                        <div class="attribute">githubUrl</div>
+                        <div class="attribute">skills</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description-box one-to-one">
+                <h4>💡 Explanation:</h4>
+                <ul>
+                    <li><strong>@OneToOne</strong> annotation is used on both sides</li>
+                    <li>Each student has exactly ONE profile</li>
+                    <li>Each profile belongs to exactly ONE student</li>
+                    <li>The student_id in StudentProfile table is marked as UNIQUE</li>
+                    <li>Bidirectional relationship with mappedBy on Student side</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Diagram 2: One-to-Many Relationship -->
+        <div class="diagram-section">
+            <div class="diagram-header one-to-many">
+                <h3>📚 One-to-Many Relationship (1:N)</h3>
+                <p>Shows all One-to-Many relationships in the system</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 40px 20px;">
+                <!-- Left Column: Department-centric relationships -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <h4 style="color: #2196f3; font-size: 1.3rem; margin-bottom: 20px;">Department as Parent (1:N)</h4>
+
+                    <!-- Central Department Entity -->
+                    <div class="entity-box highlight-one-to-many" style="position: relative; z-index: 10;">
+                        <div class="entity-header one-to-many">🏛️ DEPARTMENT</div>
+                        <div class="entity-body">
+                            <div class="attribute primary-key">🔑 id</div>
+                            <div class="attribute">name (UNIQUE)</div>
+                            <div class="attribute">code (UNIQUE)</div>
+                            <div class="attribute">description</div>
+                        </div>
+                    </div>
+
+                    <!-- Connecting lines structure -->
+                    <div style="position: relative; width: 650px; margin-top: 20px; height: 120px;">
+                        <!-- Main vertical line from department -->
+                        <div style="position: absolute; left: 50%; top: 0; width: 3px; height: 40px; background: #2196f3; transform: translateX(-50%);"></div>
+
+                        <!-- Horizontal distribution line -->
+                        <div style="position: absolute; left: 10%; top: 40px; width: 80%; height: 3px; background: #2196f3;"></div>
+
+                        <!-- Three vertical lines going down to 1:N labels -->
+                        <!-- Left line to Student -->
+                        <div style="position: absolute; left: 15%; top: 40px; width: 3px; height: 80px; background: #2196f3;"></div>
+                        <!-- Middle line to Teacher -->
+                        <div style="position: absolute; left: 50%; top: 40px; width: 3px; height: 80px; background: #2196f3; transform: translateX(-50%);"></div>
+                        <!-- Right line to Course -->
+                        <div style="position: absolute; right: 10%; top: 40px; width: 3px; height: 80px; background: #2196f3;"></div>
+                    </div>
+
+                    <!-- Three child entities in a row -->
+                    <div style="display: flex; gap: 20px; justify-content: space-between; width: 650px; margin-top: 10px;">
+                        <!-- Student -->
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="relationship-label one-to-many" style="font-size: 0.9rem; padding: 6px 15px; margin-bottom: 15px; background: white; z-index: 20; position: relative;">1:N</div>
+                            <div style="width: 3px; height: 40px; background: #2196f3; position: relative;">
+                                <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #2196f3;"></div>
+                            </div>
+                            <div class="entity-box highlight-one-to-many" style="min-width: 200px; max-width: 200px; margin-top: 10px;">
+                                <div class="entity-header one-to-many" style="font-size: 1rem; padding: 10px;">👨‍🎓 STUDENT</div>
+                                <div class="entity-body" style="padding: 12px;">
+                                    <div class="attribute primary-key" style="font-size: 0.85rem; padding: 6px;">🔑 id</div>
+                                    <div class="attribute" style="font-size: 0.85rem; padding: 4px;">rollNumber</div>
+                                    <div class="attribute foreign-key" style="font-size: 0.85rem; padding: 4px;">🔗 department_id</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Teacher -->
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="relationship-label one-to-many" style="font-size: 0.9rem; padding: 6px 15px; margin-bottom: 15px; background: white; z-index: 20; position: relative;">1:N</div>
+                            <div style="width: 3px; height: 40px; background: #2196f3; position: relative;">
+                                <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #2196f3;"></div>
+                            </div>
+                            <div class="entity-box highlight-one-to-many" style="min-width: 200px; max-width: 200px; margin-top: 10px;">
+                                <div class="entity-header one-to-many" style="font-size: 1rem; padding: 10px;">👨‍🏫 TEACHER</div>
+                                <div class="entity-body" style="padding: 12px;">
+                                    <div class="attribute primary-key" style="font-size: 0.85rem; padding: 6px;">🔑 id</div>
+                                    <div class="attribute" style="font-size: 0.85rem; padding: 4px;">employeeId</div>
+                                    <div class="attribute foreign-key" style="font-size: 0.85rem; padding: 4px;">🔗 department_id</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course -->
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="relationship-label one-to-many" style="font-size: 0.9rem; padding: 6px 15px; margin-bottom: 15px; background: white; z-index: 20; position: relative;">1:N</div>
+                            <div style="width: 3px; height: 40px; background: #2196f3; position: relative;">
+                                <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #2196f3;"></div>
+                            </div>
+                            <div class="entity-box highlight-one-to-many" style="min-width: 200px; max-width: 200px; margin-top: 10px;">
+                                <div class="entity-header one-to-many" style="font-size: 1rem; padding: 10px;">📚 COURSE</div>
+                                <div class="entity-body" style="padding: 12px;">
+                                    <div class="attribute primary-key" style="font-size: 0.85rem; padding: 6px;">🔑 id</div>
+                                    <div class="attribute" style="font-size: 0.85rem; padding: 4px;">courseCode</div>
+                                    <div class="attribute foreign-key" style="font-size: 0.85rem; padding: 4px;">🔗 department_id</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Teacher → Courses relationship -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <h4 style="color: #2196f3; font-size: 1.3rem; margin-bottom: 20px;">Teacher as Parent (1:N)</h4>
+
+                    <!-- Teacher Entity -->
+                    <div class="entity-box highlight-one-to-many">
+                        <div class="entity-header one-to-many">👨‍🏫 TEACHER</div>
+                        <div class="entity-body">
+                            <div class="attribute primary-key">🔑 id</div>
+                            <div class="attribute">employeeId (UNIQUE)</div>
+                            <div class="attribute">name</div>
+                            <div class="attribute">specialization</div>
+                            <div class="attribute">qualification</div>
+                        </div>
+                    </div>
+
+                    <!-- Connecting line from Teacher to 1:N label -->
+                    <div style="width: 3px; height: 40px; background: #2196f3;"></div>
+
+                    <!-- 1:N Label with proper spacing and background -->
+                    <div class="relationship-label one-to-many" style="font-size: 0.9rem; padding: 6px 15px; background: white; z-index: 20; position: relative;">1:N</div>
+
+                    <!-- Arrow line from 1:N to Course -->
+                    <div style="width: 3px; height: 40px; background: #2196f3; position: relative;">
+                        <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #2196f3;"></div>
+                    </div>
+
+                    <!-- Course Entity -->
+                    <div class="entity-box highlight-one-to-many">
+                        <div class="entity-header one-to-many">📚 COURSE</div>
+                        <div class="entity-body">
+                            <div class="attribute primary-key">🔑 id</div>
+                            <div class="attribute">courseCode (UNIQUE)</div>
+                            <div class="attribute">name</div>
+                            <div class="attribute">credits</div>
+                            <div class="attribute foreign-key">🔗 teacher_id</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description-box one-to-many">
+                <h4>💡 Explanation - All One-to-Many Relationships:</h4>
+                <ul>
+                    <li><strong>Department → Students:</strong> One department has many students (Foreign key: department_id in Student table)</li>
+                    <li><strong>Department → Teachers:</strong> One department has many teachers (Foreign key: department_id in Teacher table)</li>
+                    <li><strong>Department → Courses:</strong> One department offers many courses (Foreign key: department_id in Course table)</li>
+                    <li><strong>Teacher → Courses:</strong> One teacher teaches many courses (Foreign key: teacher_id in Course table)</li>
+                    <li><strong>Annotation:</strong> @OneToMany on parent side, @ManyToOne on child side</li>
+                    <li><strong>Foreign Keys:</strong> Always stored in the "Many" side (child entities)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Diagram 3: Many-to-One Relationship -->
+        <div class="diagram-section">
+            <div class="diagram-header one-to-many">
+                <h3>🔙 Many-to-One Relationship (N:1)</h3>
+                <p>Shows all Many-to-One relationships in the system (inverse of One-to-Many)</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 40px 20px;">
+                <!-- Left Column: Department as Child (Many entities pointing to Department) -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <h4 style="color: #2196f3; font-size: 1.3rem; margin-bottom: 20px;">Many Children → Department (N:1)</h4>
+
+                    <!-- Three parent entities in a row -->
+                    <div style="display: flex; gap: 20px; justify-content: space-between; width: 650px;">
+                        <!-- Student -->
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="entity-box highlight-one-to-many" style="min-width: 200px; max-width: 200px;">
+                                <div class="entity-header one-to-many" style="font-size: 1rem; padding: 10px;">👨‍🎓 STUDENT</div>
+                                <div class="entity-body" style="padding: 12px;">
+                                    <div class="attribute primary-key" style="font-size: 0.85rem; padding: 6px;">🔑 id</div>
+                                    <div class="attribute" style="font-size: 0.85rem; padding: 4px;">rollNumber</div>
+                                    <div class="attribute foreign-key" style="font-size: 0.85rem; padding: 4px;">🔗 department_id</div>
+                                </div>
+                            </div>
+                            <div style="width: 3px; height: 40px; background: #2196f3; margin-top: 10px; position: relative;">
+                                <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #2196f3;"></div>
+                            </div>
+                            <div class="relationship-label one-to-many" style="font-size: 0.9rem; padding: 6px 15px; margin-top: 15px; background: white; z-index: 20; position: relative;">N:1</div>
+                        </div>
+
+                        <!-- Teacher -->
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="entity-box highlight-one-to-many" style="min-width: 200px; max-width: 200px;">
+                                <div class="entity-header one-to-many" style="font-size: 1rem; padding: 10px;">👨‍🏫 TEACHER</div>
+                                <div class="entity-body" style="padding: 12px;">
+                                    <div class="attribute primary-key" style="font-size: 0.85rem; padding: 6px;">🔑 id</div>
+                                    <div class="attribute" style="font-size: 0.85rem; padding: 4px;">employeeId</div>
+                                    <div class="attribute foreign-key" style="font-size: 0.85rem; padding: 4px;">🔗 department_id</div>
+                                </div>
+                            </div>
+                            <div style="width: 3px; height: 40px; background: #2196f3; margin-top: 10px; position: relative;">
+                                <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #2196f3;"></div>
+                            </div>
+                            <div class="relationship-label one-to-many" style="font-size: 0.9rem; padding: 6px 15px; margin-top: 15px; background: white; z-index: 20; position: relative;">N:1</div>
+                        </div>
+
+                        <!-- Course -->
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="entity-box highlight-one-to-many" style="min-width: 200px; max-width: 200px;">
+                                <div class="entity-header one-to-many" style="font-size: 1rem; padding: 10px;">📚 COURSE</div>
+                                <div class="entity-body" style="padding: 12px;">
+                                    <div class="attribute primary-key" style="font-size: 0.85rem; padding: 6px;">🔑 id</div>
+                                    <div class="attribute" style="font-size: 0.85rem; padding: 4px;">courseCode</div>
+                                    <div class="attribute foreign-key" style="font-size: 0.85rem; padding: 4px;">🔗 department_id</div>
+                                </div>
+                            </div>
+                            <div style="width: 3px; height: 40px; background: #2196f3; margin-top: 10px; position: relative;">
+                                <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #2196f3;"></div>
+                            </div>
+                            <div class="relationship-label one-to-many" style="font-size: 0.9rem; padding: 6px 15px; margin-top: 15px; background: white; z-index: 20; position: relative;">N:1</div>
+                        </div>
+                    </div>
+
+                    <!-- Connecting lines structure -->
+                    <div style="position: relative; width: 650px; margin-top: 10px; height: 120px;">
+                        <!-- Three vertical lines coming from N:1 labels -->
+                        <!-- Left line from Student -->
+                        <div style="position: absolute; left: 15%; top: 0; width: 3px; height: 80px; background: #2196f3;"></div>
+                        <!-- Middle line from Teacher -->
+                        <div style="position: absolute; left: 50%; top: 0; width: 3px; height: 80px; background: #2196f3; transform: translateX(-50%);"></div>
+                        <!-- Right line from Course -->
+                        <div style="position: absolute; right: 10%; top: 0; width: 3px; height: 80px; background: #2196f3;"></div>
+
+                        <!-- Horizontal distribution line -->
+                        <div style="position: absolute; left: 10%; top: 80px; width: 80%; height: 3px; background: #2196f3;"></div>
+
+                        <!-- Main vertical line to department -->
+                        <div style="position: absolute; left: 50%; top: 80px; width: 3px; height: 40px; background: #2196f3; transform: translateX(-50%);"></div>
+                    </div>
+
+                    <!-- Central Department Entity -->
+                    <div class="entity-box highlight-one-to-many" style="position: relative; z-index: 10; margin-top: 10px;">
+                        <div class="entity-header one-to-many">🏛️ DEPARTMENT</div>
+                        <div class="entity-body">
+                            <div class="attribute primary-key">🔑 id</div>
+                            <div class="attribute">name (UNIQUE)</div>
+                            <div class="attribute">code (UNIQUE)</div>
+                            <div class="attribute">description</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Course → Teacher relationship -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <h4 style="color: #2196f3; font-size: 1.3rem; margin-bottom: 20px;">Course → Teacher (N:1)</h4>
+
+                    <!-- Course Entity -->
+                    <div class="entity-box highlight-one-to-many">
+                        <div class="entity-header one-to-many">📚 COURSE</div>
+                        <div class="entity-body">
+                            <div class="attribute primary-key">🔑 id</div>
+                            <div class="attribute">courseCode (UNIQUE)</div>
+                            <div class="attribute">name</div>
+                            <div class="attribute">credits</div>
+                            <div class="attribute foreign-key">🔗 teacher_id</div>
+                        </div>
+                    </div>
+
+                    <!-- Connecting line from Course to N:1 label -->
+                    <div style="width: 3px; height: 40px; background: #2196f3;"></div>
+
+                    <!-- N:1 Label with proper spacing and background -->
+                    <div class="relationship-label one-to-many" style="font-size: 0.9rem; padding: 6px 15px; background: white; z-index: 20; position: relative;">N:1</div>
+
+                    <!-- Arrow line from N:1 to Teacher -->
+                    <div style="width: 3px; height: 40px; background: #2196f3; position: relative;">
+                        <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #2196f3;"></div>
+                    </div>
+
+                    <!-- Teacher Entity -->
+                    <div class="entity-box highlight-one-to-many">
+                        <div class="entity-header one-to-many">👨‍🏫 TEACHER</div>
+                        <div class="entity-body">
+                            <div class="attribute primary-key">🔑 id</div>
+                            <div class="attribute">employeeId (UNIQUE)</div>
+                            <div class="attribute">name</div>
+                            <div class="attribute">specialization</div>
+                            <div class="attribute">qualification</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description-box one-to-many">
+                <h4>💡 Explanation - All Many-to-One Relationships:</h4>
+                <ul>
+                    <li><strong>Student → Department:</strong> Many students belong to one department (Foreign key: department_id in Student table)</li>
+                    <li><strong>Teacher → Department:</strong> Many teachers belong to one department (Foreign key: department_id in Teacher table)</li>
+                    <li><strong>Course → Department:</strong> Many courses belong to one department (Foreign key: department_id in Course table)</li>
+                    <li><strong>Course → Teacher:</strong> Many courses are taught by one teacher (Foreign key: teacher_id in Course table)</li>
+                    <li><strong>Annotation:</strong> @ManyToOne on child side pointing to parent</li>
+                    <li><strong>Foreign Keys:</strong> Always stored in the "Many" side (child entities)</li>
+                    <li><strong>Inverse Perspective:</strong> These are the same relationships as One-to-Many, viewed from the child's perspective</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Diagram 4: Many-to-Many Relationship -->
+        <div class="diagram-section">
+            <div class="diagram-header many-to-many">
+                <h3>🔄 Many-to-Many Relationship (N:N)</h3>
+                <p>Students can enroll in many Courses, and Courses can have many Students</p>
+            </div>
+
+            <div class="diagram-content">
+                <div class="entity-box highlight-many-to-many">
+                    <div class="entity-header many-to-many">👨‍🎓 STUDENT</div>
+                    <div class="entity-body">
+                        <div class="attribute primary-key">🔑 id</div>
+                        <div class="attribute">rollNumber</div>
+                        <div class="attribute">name</div>
+                        <div class="attribute">email</div>
+                        <div class="attribute">semester</div>
+                    </div>
+                </div>
+
+                <div class="relationship-indicator">
+                    <div class="arrow-line many-to-many"></div>
+                    <div class="relationship-label many-to-many">N : N</div>
+                </div>
+
+                <div class="entity-box highlight-many-to-many">
+                    <div class="entity-header many-to-many">📝 ENROLLMENT<br><small>(Junction Table)</small></div>
+                    <div class="entity-body">
+                        <div class="attribute primary-key">🔑 id</div>
+                        <div class="attribute foreign-key">🔗 student_id</div>
+                        <div class="attribute foreign-key">🔗 course_id</div>
+                        <div class="attribute">academicYear</div>
+                        <div class="attribute">semester</div>
+                        <div class="attribute">grade</div>
+                        <div class="attribute">marks</div>
+                        <div class="attribute">status</div>
+                    </div>
+                </div>
+
+                <div class="relationship-indicator">
+                    <div class="arrow-line many-to-many"></div>
+                    <div class="relationship-label many-to-many">N : N</div>
+                </div>
+
+                <div class="entity-box highlight-many-to-many">
+                    <div class="entity-header many-to-many">📚 COURSE</div>
+                    <div class="entity-body">
+                        <div class="attribute primary-key">🔑 id</div>
+                        <div class="attribute">courseCode</div>
+                        <div class="attribute">name</div>
+                        <div class="attribute">credits</div>
+                        <div class="attribute">semester</div>
+                        <div class="attribute">courseType</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description-box many-to-many">
+                <h4>💡 Explanation:</h4>
+                <ul>
+                    <li>Many-to-Many relationship implemented using a <strong>Junction Table (Enrollment)</strong></li>
+                    <li>One student can enroll in MANY courses</li>
+                    <li>One course can have MANY students</li>
+                    <li>Enrollment table contains foreign keys to both Student and Course</li>
+                    <li>Additional attributes (grade, marks, status) stored in the junction table</li>
+                    <li><strong>@OneToMany</strong> used on both Student and Course sides pointing to Enrollment</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="diagram-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem;">📊 Summary of All Relationships</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: rgba(255,255,255,0.95); padding: 25px; border-radius: 12px; color: #333;">
+                    <h3 style="color: #4caf50; margin-bottom: 15px; font-size: 1.3rem;">🔗 One-to-One (1:1)</h3>
+                    <p style="font-size: 0.95rem; line-height: 1.6;">
+                        <strong>Count:</strong> 1 relationship<br>
+                        <strong>Example:</strong><br>
+                        • Student ↔ StudentProfile
+                    </p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.95); padding: 25px; border-radius: 12px; color: #333;">
+                    <h3 style="color: #2196f3; margin-bottom: 15px; font-size: 1.3rem;">📚 One-to-Many (1:N)</h3>
+                    <p style="font-size: 0.95rem; line-height: 1.6;">
+                        <strong>Count:</strong> 6 relationships<br>
+                        <strong>Examples:</strong><br>
+                        • Department → Students<br>
+                        • Department → Teachers<br>
+                        • Department → Courses<br>
+                        • Teacher → Courses
+                    </p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.95); padding: 25px; border-radius: 12px; color: #333;">
+                    <h3 style="color: #2196f3; margin-bottom: 15px; font-size: 1.3rem;">🔙 Many-to-One (N:1)</h3>
+                    <p style="font-size: 0.95rem; line-height: 1.6;">
+                        <strong>Count:</strong> 4 relationships<br>
+                        <strong>Examples:</strong><br>
+                        • Student → Department<br>
+                        • Teacher → Department<br>
+                        • Course → Department<br>
+                        • Course → Teacher
+                    </p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.95); padding: 25px; border-radius: 12px; color: #333;">
+                    <h3 style="color: #e91e63; margin-bottom: 15px; font-size: 1.3rem;">🔄 Many-to-Many (N:N)</h3>
+                    <p style="font-size: 0.95rem; line-height: 1.6;">
+                        <strong>Count:</strong> 1 relationship<br>
+                        <strong>Example:</strong><br>
+                        • Student ↔ Course<br>
+                        (via Enrollment junction table)
+                    </p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 25px; background: rgba(255,255,255,0.95); border-radius: 12px; color: #333;">
+                <h3 style="color: #9c27b0; margin-bottom: 15px; font-size: 1.3rem; text-align: center;">🔺 Bonus: Inheritance Relationship</h3>
+                <p style="font-size: 0.95rem; line-height: 1.6; text-align: center;">
+                    <strong>Type:</strong> IS-A Relationship (JOINED Strategy)<br>
+                    <strong>Examples:</strong> Student extends User | Teacher extends User
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            const userRole = sessionStorage.getItem('userRole');
+            if (userRole === 'student') {
+                window.location.href = '/dashboard';
+            } else if (userRole === 'teacher') {
+                window.location.href = '/teacher-dashboard';
+            } else {
+                window.location.href = '/';
+            }
+        }
+
+        // Add fade-in animation
+        window.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.diagram-section');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    section.style.transition = 'all 0.6s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

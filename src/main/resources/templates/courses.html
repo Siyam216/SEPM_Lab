@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Courses - Student Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        <!-- trigger ci -->
+
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-type-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .course-type-CORE {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .course-type-ELECTIVE {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .course-type-LAB {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .course-type-PROJECT {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .course-card h3 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            padding-right: 80px;
+        }
+
+        .course-code {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .course-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .course-details {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .teacher-name {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .enroll-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .enroll-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .enroll-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .enrolled-badge {
+            background: #4caf50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .no-courses {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1 onclick="window.location.href='/dashboard'">🎓 Student Management System</h1>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile">My Profile</a>
+            <a href="/my-courses">My Courses</a>
+            <a href="/" onclick="sessionStorage.clear()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h2>📚 Available Courses</h2>
+            <p>Browse and enroll in courses for the current semester</p>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="searchCourse">Search Course</label>
+                <input type="text" id="searchCourse" placeholder="Search by name or code..." onkeyup="filterCourses()">
+            </div>
+            <div class="filter-group">
+                <label for="filterSemester">Semester</label>
+                <select id="filterSemester" onchange="filterCourses()">
+                    <option value="">All Semesters</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filterType">Course Type</label>
+                <select id="filterType" onchange="filterCourses()">
+                    <option value="">All Types</option>
+                    <option value="CORE">Core</option>
+                    <option value="ELECTIVE">Elective</option>
+                    <option value="LAB">Lab</option>
+                    <option value="PROJECT">Project</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">
+            Loading courses...
+        </div>
+
+        <div id="coursesGrid" class="courses-grid" style="display: none;">
+        </div>
+
+        <div id="noCourses" class="no-courses" style="display: none;">
+            <h3>📭 No courses found</h3>
+            <p>Try adjusting your filters or check back later for new courses.</p>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        let allCourses = [];
+        let enrolledCourses = [];
+        let currentStudent = null;
+
+        window.addEventListener('DOMContentLoaded', async function() {
+            // Require authentication
+            if (!requireAuth()) {
+                return;
+            }
+            await loadData();
+        });
+
+        async function loadData() {
+            try {
+                const userEmail = getUserInfo().email;
+
+                if (!userEmail) {
+                    logout();
+                    return;
+                }
+
+                // Load courses and current student with authentication
+                const [coursesResponse, studentsResponse] = await Promise.all([
+                    fetchWithAuth('/api/courses/all'),
+                    fetchWithAuth('/api/students')
+                ]);
+
+                allCourses = await coursesResponse.json();
+                const students = await studentsResponse.json();
+                currentStudent = students.find(s => s.email === userEmail);
+
+                // Load enrollments with authentication
+                const enrollmentsResponse = await fetchWithAuth('/api/enrollments');
+                const enrollments = await enrollmentsResponse.json();
+                enrolledCourses = enrollments
+                    .filter(e => e.student && e.student.id === currentStudent.id)
+                    .map(e => e.course.id);
+
+                displayCourses(allCourses);
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').innerHTML = '<p style="color: #c33;">Failed to load courses. Please try again.</p>';
+            }
+        }
+
+        function displayCourses(courses) {
+            document.getElementById('loading').style.display = 'none';
+
+            if (courses.length === 0) {
+                document.getElementById('noCourses').style.display = 'block';
+                document.getElementById('coursesGrid').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('noCourses').style.display = 'none';
+            document.getElementById('coursesGrid').style.display = 'grid';
+
+            const grid = document.getElementById('coursesGrid');
+            grid.innerHTML = '';
+
+            courses.forEach(course => {
+                const isEnrolled = enrolledCourses.includes(course.id);
+
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <span class="course-type-badge course-type-${course.courseType}">${course.courseType}</span>
+                    <h3>${course.name}</h3>
+                    <div class="course-code">${course.courseCode}</div>
+                    <p class="course-description">${course.description || 'No description available'}</p>
+                    <div class="course-details">
+                        <span class="detail-item">📖 ${course.credits} Credits</span>
+                        <span class="detail-item">📅 Semester ${course.semester}</span>
+                        <span class="detail-item">🏢 ${course.department ? course.department.name : 'N/A'}</span>
+                    </div>
+                    <div class="course-footer">
+                        <span class="teacher-name">👨‍🏫 ${course.teacher ? course.teacher.name : 'TBA'}</span>
+                        ${isEnrolled
+                            ? '<span class="enrolled-badge">✓ Enrolled</span>'
+                            : `<button class="enroll-btn" onclick="enrollCourse(${course.id})">Enroll Now</button>`
+                        }
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterCourses() {
+            const searchTerm = document.getElementById('searchCourse').value.toLowerCase();
+            const semester = document.getElementById('filterSemester').value;
+            const type = document.getElementById('filterType').value;
+
+            const filtered = allCourses.filter(course => {
+                const matchesSearch = course.name.toLowerCase().includes(searchTerm) ||
+                                     course.courseCode.toLowerCase().includes(searchTerm);
+                const matchesSemester = !semester || course.semester == semester;
+                const matchesType = !type || course.courseType === type;
+
+                return matchesSearch && matchesSemester && matchesType;
+            });
+
+            displayCourses(filtered);
+        }
+
+        async function enrollCourse(courseId) {
+            if (!currentStudent) {
+                alert('Please login first');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to enroll in this course?')) {
+                return;
+            }
+
+            try {
+                const enrollmentData = {
+                    studentId: currentStudent.id,
+                    courseId: courseId,
+                    semester: currentStudent.semester || 1,
+                    academicYear: new Date().getFullYear().toString()
+                };
+
+                const response = await fetchWithAuth('/api/enrollments', {
+                    method: 'POST',
+                    body: enrollmentData
+                });
+
+                if (response.ok) {
+                    alert('Successfully enrolled in the course!');
+                    enrolledCourses.push(courseId);
+                    filterCourses(); // Refresh display
+                } else {
+                    const error = await response.json();
+                    alert('Enrollment failed: ' + (error.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error enrolling:', error);
+                alert('Failed to enroll. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

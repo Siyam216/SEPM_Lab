@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            min-height: 500px;
+        }
+
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .login-left h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .login-left p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .login-left .icon {
+            font-size: 100px;
+            margin-bottom: 30px;
+        }
+
+        .login-right {
+            flex: 1;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-right h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .login-right .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .role-option {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .role-option:hover {
+            border-color: #667eea;
+        }
+
+        .role-option.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .login-left {
+                padding: 40px 30px;
+            }
+
+            .login-right {
+                padding: 40px 30px;
+            }
+
+            .login-left h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="login-left">
+        <div class="icon">🎓</div>
+        <h1>Student Management System</h1>
+        <p>Welcome! Please login to access your dashboard and manage academic activities efficiently.</p>
+    </div>
+
+    <div class="login-right">
+        <h2>Welcome Back!</h2>
+        <p class="subtitle">Please login to your account</p>
+
+        <form id="loginForm" action="/dashboard" method="get">
+            <div class="form-group">
+                <label for="role">Login As</label>
+                <select id="role" name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+
+            <div class="register-link">
+                Don't have an account? <a href="/register">Register here</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Login form with JWT authentication
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const role = document.getElementById('role').value;
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!role || !email || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        // Show loading state
+        const submitBtn = e.target.querySelector('.login-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Logging in...';
+        submitBtn.disabled = true;
+
+        try {
+            // Call the authentication API
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: 'Invalid credentials' }));
+                throw new Error(errorData.message || 'Login failed');
+            }
+
+            const data = await response.json();
+
+            console.log('Login successful:', data);
+
+            // Verify role matches
+            if (data.role && data.role.toLowerCase() !== role.toLowerCase()) {
+                alert(`You selected to login as ${role}, but this account is registered as ${data.role}. Please select the correct role.`);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                return;
+            }
+
+            // Store authentication data
+            sessionStorage.setItem('jwtToken', data.token);
+            sessionStorage.setItem('userRole', data.role.toLowerCase());
+            sessionStorage.setItem('userEmail', data.email);
+            sessionStorage.setItem('userId', data.id);
+            sessionStorage.setItem('userName', data.name);
+            sessionStorage.setItem('userStatus', data.status);
+
+            console.log('Login successful! Redirecting...');
+
+            // Redirect based on role
+            if (data.role === 'TEACHER') {
+                window.location.href = '/teacher-dashboard';
+            } else {
+                window.location.href = '/dashboard';
+            }
+
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Login failed: ' + error.message + '\n\nPlease check your credentials and try again.');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
