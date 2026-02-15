@@ -20,7 +20,7 @@ public class AuthResponse {
     // JWT token for authenticated requests (24-hour expiration)
     private String token;
 
-    // Token type - always "Bearer" for JWT authentication
+
     private String type = "Bearer";
 
     // User's unique database ID
